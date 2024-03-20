@@ -43,7 +43,7 @@ function toggleFrame() {
 
 const timer = ref<undefined | number>()
 function play() {
-  timer.value = setInterval(() => toggleFrame(), 800)
+  timer.value = setInterval(() => toggleFrame(), 1000)
 }
 
 function stop() {
