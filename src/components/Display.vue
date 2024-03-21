@@ -48,7 +48,7 @@ font-size: 47px; -->
 import { onUnmounted, ref, computed, onMounted } from 'vue'
 import Pixel from './Pixel.vue'
 import Button from './Button.vue'
-import { hexToArray, arrayToHex } from '../tools'
+import { flatToNested } from '../tools'
 import {useToast} from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
@@ -83,22 +83,13 @@ function stop() {
 function share() {
   let url = new URL(window.location.href.split('?')[0]);
 
-  url.searchParams.set('f0', arrayToHex(frames.value[0].flat(1)));
-  url.searchParams.set('f1', arrayToHex(frames.value[1].flat(1)));
+  url.searchParams.set('f0', frames.value[0].flat(1).join(''));
+  url.searchParams.set('f1', frames.value[1].flat(1).join(''));
 
   console.log('share url', url.href)
   navigator.clipboard.writeText(url.href);
   const $toast = useToast();
   $toast.success('Link copied to clipboard!');
-}
-
-function hexToNested(hex: string, size: number) {
-  return hexToArray(hex).reduce((acc, _current, index, array) => {
-      if (index % size === 0) { // Для каждого элемента с четным индексом (нумерация с 0)
-        acc.push(array.slice(index, index + size)); // Добавляем пару в аккумулятор
-      }
-    return acc;
-    }, [] as Array<number[]>)
 }
 
 onMounted(() => {
@@ -113,8 +104,8 @@ onMounted(() => {
     console.log('param', param)
 
     if (param) {
-      console.log('restore frame', frameIdx, hexToNested(param, size))
-      hexToNested(param, size).forEach((row, rowIdx) => {
+      console.log('restore frame', frameIdx)
+      flatToNested(Array.from(param).map(Number), size).forEach((row, rowIdx) => {
         frames.value[frameIdx][rowIdx] = [...row]
     })
     loadedFrames++
