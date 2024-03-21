@@ -105,6 +105,7 @@ onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search)
 
   console.log('mounted', urlParams)
+  let loadedFrames = 0
 
   new Array(2).fill(1).forEach((_v, frameIdx) => {
     const param = urlParams.get(`f${frameIdx}`)
@@ -116,8 +117,13 @@ onMounted(() => {
       hexToNested(param, size).forEach((row, rowIdx) => {
         frames.value[frameIdx][rowIdx] = [...row]
     })
+    loadedFrames++
     }
   })
+
+  if (loadedFrames > 1) {
+    play()
+  }
 })
 
 onUnmounted(() => {
