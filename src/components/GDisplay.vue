@@ -1,25 +1,25 @@
 <template>
   <div class="px-10 pt-5 rounded-xl bg-fuchsia-800 shadow-lg shadow-stone-600 max-w-[500px] w-full relative">
-
-      <Popper hover content="Full reset" class="text-sm">
-        <button @click="reset"
-              class="w-2 h-2 bg-fuchsia-950 rounded-full"
-              >
-            </button>
-      </Popper>
-    <div 
+    <Popper hover content="Full reset" class="text-sm">
+      <button class="w-2 h-2 bg-fuchsia-950 rounded-full" @click="reset" />
+    </Popper>
+    <div
       class="text-center py-3 text-4xl font-bold tracking-wider text-transparent bg-clip-text bg-fuchsia-950"
-      style="text-shadow: 0px 1px 4px rgb(141 61 154 / 70%);"
-      >
+      style="text-shadow: 0px 1px 4px rgb(141 61 154 / 70%)"
+    >
       GOTCHI
     </div>
 
-    <div class="shadow-inner p-3  shadow-fuchsia-500 rounded-md ">
+    <div class="shadow-inner p-3 shadow-fuchsia-500 rounded-md">
       <div class="flex flex-col gap-[2px] bg-display-200 rounded-sm p-[5px]">
         <template v-for="(row, y) in frames[activeFrameIdx]" :key="y">
           <div class="flex flex-1 gap-[2px] w-full">
             <template v-for="(pixel, x) in row" :key="x">
-              <Pixel :value="pixel" :shadow-value="timer ? 0 : frames[shadowFrameIdx][y][x]" @toggle="togglePixel(activeFrameIdx, y, x)"/>
+              <Pixel
+                :value="pixel"
+                :shadow-value="timer ? 0 : frames[shadowFrameIdx][y][x]"
+                @toggle="togglePixel(activeFrameIdx, y, x)"
+              />
             </template>
           </div>
         </template>
@@ -36,36 +36,26 @@
             FRAME
           </div>
         </button> -->
-        <Button @click="toggleFrame" text="FRAME"></Button>
-        <Button  v-if="!timer" @click="play" text="PLAY"></Button>
-        <Button v-else @click="stop" text="STOP"></Button>
-        <Button @click="share" text="SHARE"></Button>
-
-      <!-- <button v-if="!timer" @click="play" class="p-3 px-5 bg-fuchsia-700 text-white rounded-full">PLAY</button> -->
-      <!-- <button v-else @click="stop" class="p-3 px-5 bg-fuchsia-700 text-white rounded-full">STOP</button> -->
+      <Button text="FRAME" @click="toggleFrame" />
+      <Button v-if="!timer" text="PLAY" @click="play" />
+      <Button v-else text="STOP" @click="stop" />
+      <Button text="SHARE" @click="share" />
     </div>
   </div>
 </template>
 
-<!-- background-color: #470555;
-color: transparent;
-text-shadow: 0px 1px 5px rgb(141 61 154 / 80%);
-background-clip: text;
-font-size: 47px; -->
-
 <script setup lang="ts">
 import { onUnmounted, ref, computed, onMounted } from 'vue'
-import Pixel from './Pixel.vue'
-import Button from './Button.vue'
+import Pixel from './GPixel.vue'
+import Button from './GButton.vue'
 import { flatToNested } from '../tools'
-import {useToast} from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from 'vue-toast-notification'
 import lzstring from 'lz-string'
-import Popper from "vue3-popper"
+import Popper from 'vue3-popper'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
 const size = 20
 function generateMatrix(size: number) {
-
   const matrix: Array<number[]> = []
 
   for (let i = 0; i < size; i++) {
@@ -75,15 +65,15 @@ function generateMatrix(size: number) {
   return [...matrix]
 }
 
-const shadowFrameIdx = computed(() => activeFrameIdx.value ? 0 : 1)
+const shadowFrameIdx = computed(() => (activeFrameIdx.value ? 0 : 1))
 
 function toggleFrame() {
   activeFrameIdx.value = activeFrameIdx.value ? 0 : 1
 }
 
-const timer = ref<undefined | number>()
+const timer = ref<number | number>()
 function play() {
-  timer.value = setInterval(() => toggleFrame(), 1000)
+  timer.value = setInterval(() => toggleFrame(), 1000) as unknown as number
 }
 
 function stop() {
@@ -96,20 +86,20 @@ function reset() {
   stop()
   frames.value = [generateMatrix(size), generateMatrix(size)]
   activeFrameIdx.value = 0
-  window.history.pushState(null, '', window.location.pathname);
+  window.history.pushState(null, '', window.location.pathname)
 }
 
 function share() {
-  let url = new URL(window.location.href.split('?')[0]);
+  let url = new URL(window.location.href.split('?')[0])
 
   frames.value.forEach((frame, frameIdx) => {
     url.searchParams.set(`f${frameIdx}`, lzstring.compressToEncodedURIComponent(frame.flat(1).join('')))
   })
 
   console.log('share url', url.href)
-  navigator.clipboard.writeText(url.href);
-  const $toast = useToast();
-  $toast.success('Link copied to clipboard!');
+  navigator.clipboard.writeText(url.href)
+  const $toast = useToast()
+  $toast.success('Link copied to clipboard!')
 }
 
 onMounted(() => {
@@ -125,10 +115,12 @@ onMounted(() => {
 
     if (param) {
       console.log('restore frame', frameIdx)
-      flatToNested(lzstring.decompressFromEncodedURIComponent(param).split('').map(Number), size).forEach((row, rowIdx) => {
-        frames.value[frameIdx][rowIdx] = [...row]
-    })
-    loadedFrames++
+      flatToNested(lzstring.decompressFromEncodedURIComponent(param).split('').map(Number), size).forEach(
+        (row, rowIdx) => {
+          frames.value[frameIdx][rowIdx] = [...row]
+        },
+      )
+      loadedFrames++
     }
   })
 

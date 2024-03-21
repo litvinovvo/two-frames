@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Display from './components/Display.vue'
+import Display from './components/GDisplay.vue'
 </script>
 
 <template>
