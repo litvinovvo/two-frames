@@ -3,10 +3,12 @@
     class="aspect-square rounded-[2px] w-full"
     :class="[
       value ? 'bg-display-800 ' : shadowValue ? 'bg-display-500' : 'bg-display-300',
-      shadowValue !== value && 'transition-all duration-300 ease-in-out',
+      shadowValue !== value && 'transition-all ease-in-out',
     ]"
-    :style="value ? 'box-shadow: rgba(0, 0, 0, 0.95) 0px 0px 1px;' : ''"
-    @click="$emit('toggle')"
+    :style="{
+      'box-shadow': value ? 'rgba(0, 0, 0, 0.95) 0px 0px 1px' : '',
+      'transition-duration': `${decay}ms`,
+    }"
   ></div>
 </template>
 
@@ -20,7 +22,9 @@ defineProps({
     type: Number,
     default: 0,
   },
+  decay: {
+    type: Number,
+    default: 0,
+  },
 })
-
-defineEmits(['toggle'])
 </script>

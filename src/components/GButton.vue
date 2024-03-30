@@ -1,6 +1,6 @@
 <template>
   <button
-    class="p-3 px-5 text-center py-3 rounded-full bg-fuchsia-700 shadow-md hover:shadow-sm transition-all ease-in-out shadow-gray-900/50 hover:shadow-gray-900/50"
+    class="p-3 px-5 text-center py-3 rounded-full bg-fuchsia-700 shadow-md active:shadow-sm transition-all ease-in-out shadow-gray-900/50 active:shadow-gray-900/50"
   >
     <div
       class="text-md font-bold tracking-wider text-transparent bg-clip-text bg-fuchsia-500"
