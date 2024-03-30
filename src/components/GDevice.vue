@@ -26,11 +26,11 @@
               </div>
               /
               <div class="min-w-[2ch] box-content">
-                {{ framesCount < 9 ? '0' + framesCount : framesCount }}
+                {{ framesCount < 10 ? '0' + framesCount : framesCount }}
               </div>
               <button class="px-1 text-lg text-display-400" @click="addFrame">+</button>
               <button class="px-1 text-lg text-display-400" @click="removeFrame">-</button>
-              <div class="min-w-[2ch] box-content ml-auto">{{ fps < 9 ? '0' + fps : fps }} fps</div>
+              <div class="min-w-[2ch] box-content ml-auto">{{ fps < 10 ? '0' + fps : fps }} fps</div>
               <button class="px-1 text-lg text-display-400" @click="increaseFps">+</button>
               <button class="px-1 text-lg text-display-400" @click="decreaseFps">-</button>
             </div>
